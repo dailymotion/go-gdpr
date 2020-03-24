@@ -105,6 +105,10 @@ func (c consentMetadata) VendorListVersion() uint16 {
 	return binary.BigEndian.Uint16([]byte{leftByte, rightByte})
 }
 
+func (c consentMetadata) IsServiceSpecific() bool {
+	return isSet(c, 138)
+}
+
 func (c consentMetadata) MaxVendorID() uint16 {
 	// The max vendor ID is stored in bits 213 - 228 [00000xxx xxxxxxxx xxxxx000]
 	leftByte := ((c[26] & 0x07) << 5) | ((c[27] & 0xf8) >> 3)
@@ -121,7 +125,7 @@ func (c consentMetadata) PurposeAllowed(id consentconstants.Purpose) bool {
 	return isSet(c, uint(id)+151)
 }
 
-// Returns true if the bitIndex'th bit in data is a 1, and false if it's a 0.
+// isSet returns true if the bitIndex'th bit in data is a 1, and false if it's a 0.
 func isSet(data []byte, bitIndex uint) bool {
 	byteIndex := bitIndex / 8
 	bitOffset := bitIndex % 8

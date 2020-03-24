@@ -6,7 +6,7 @@ import (
 	"github.com/prebid/go-gdpr/consentconstants"
 )
 
-// VendorConsents is a GDPR Vendor Consent string, as defined by IAB Europe. For technical details,
+// VendorConsents is a GDPR TCF 1.1 Vendor Consent string, as defined by IAB Europe. For technical details,
 // see https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/Consent%20string%20and%20vendor%20list%20formats%20v1.1%20Final.md#vendor-consent-string-format-
 type VendorConsents interface {
 	// The version of the Consent string.
@@ -58,4 +58,13 @@ type VendorConsents interface {
 	// It is the caller's responsibility to get the right Vendor List version for the semantics of the ID.
 	// For more information, see VendorListVersion().
 	VendorConsent(id uint16) bool
+}
+
+// Consents20 contains parsed IAB Europe TCF 2.0 Transparency and Consent String content.
+// For technical details, see https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/TCFv2/IAB%20Tech%20Lab%20-%20Consent%20string%20and%20vendor%20list%20formats%20v2.md#the-core-string
+type Consents20 interface {
+	VendorConsents
+
+	// IsServiceSpecific returns whether the signals encoded in this TC String were from service-specific storage (true) versus ‘global’ consensu.org shared storage (false).
+	IsServiceSpecific() bool
 }

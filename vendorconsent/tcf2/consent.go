@@ -4,7 +4,7 @@ import "github.com/prebid/go-gdpr/api"
 
 // Parse parses the TCF 2.0 vendor consent data from the string. This string should *not* be encoded (by base64 or any other encoding).
 // If the data is malformed and cannot be interpreted as a vendor consent string, this will return an error.
-func Parse(data []byte) (api.VendorConsents, error) {
+func Parse(data []byte) (api.Consents20, error) {
 	metadata, err := parseMetadata(data)
 	if err != nil {
 		return nil, err

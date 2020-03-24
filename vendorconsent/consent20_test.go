@@ -2,6 +2,7 @@ package vendorconsent
 
 import (
 	"encoding/base64"
+	"github.com/prebid/go-gdpr/api"
 	"testing"
 
 	tcf2 "github.com/prebid/go-gdpr/vendorconsent/tcf2"
@@ -64,15 +65,25 @@ func TestInvalidConsentStrings20(t *testing.T) {
 func TestParseValidString20(t *testing.T) {
 	parsed, err := ParseString("CONciguONcjGKADACHENAOCIAC0ta__AACiQABgAAYA")
 	assertNilError(t, err)
+	assertUInt8sEqual(t, 2, parsed.Version())
 	assertUInt16sEqual(t, 14, parsed.VendorListVersion())
+
+	// TCF 2.0
+	parsed20 := parsed.(api.Consents20)
+	assertBoolsEqual(t, false, parsed20.IsServiceSpecific())
 }
 
 func TestParseValidString20MaxVendorID0(t *testing.T) {
 	parsed, err := ParseString("COwJz-rOwJz-rMLAEAFRAPCgAAAAAAAAAAqIAAAAAAAA")
 	assertNilError(t, err)
+	assertUInt8sEqual(t, 2, parsed.Version())
 	// if vendor consent is empty, max vendor ID may be 0. See https://github.com/InteractiveAdvertisingBureau/iabtcf-es/issues/121
 	assertUInt16sEqual(t, 0, parsed.MaxVendorID())
 	assertUInt16sEqual(t, 15, parsed.VendorListVersion())
+
+	// TCF 2.0
+	parsed20 := parsed.(api.Consents20)
+	assertBoolsEqual(t, true, parsed20.IsServiceSpecific())
 }
 
 func TestParseEmptyString(t *testing.T) {
